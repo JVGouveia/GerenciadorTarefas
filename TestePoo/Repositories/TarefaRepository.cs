@@ -1,5 +1,6 @@
 ﻿using ConsoleTables;
 using Microsoft.EntityFrameworkCore;
+using Spectre.Console;
 using TestePoo.Data;
 using TestePoo.Models;
 using TestePoo.Services;
@@ -11,7 +12,7 @@ namespace TestePoo.Repositories
         public TarefaRepository(DataContext? context) : base(context)
         {
         }
-        public List<Tarefa> GetTarefasPorListas(List<Lista> listas)
+        public List<Tarefa>? GetTarefasPorListas(List<Lista> listas)
         {
             var listaIds = listas.Select(lista => lista.ListaId);
     
@@ -51,34 +52,17 @@ namespace TestePoo.Repositories
 
         public int EscolherTarefa(TarefaService tarefaService, ListaService listaService, Usuario usuario)
         {
+            var listas = listaService.GetListasPorUsuario(usuario.UsuarioId);
+
             Console.WriteLine("\nTarefas:");
-            var table = new ConsoleTable("Id", "Nome");
 
-            foreach (var tarefa in tarefaService.GetTarefasPorListas(listaService.GetListasPorUsuario(usuario.UsuarioId)))
-            {
-                table.AddRow($"{tarefa.TarefaId.ToString()}", $"{tarefa.Nome}");
-            }
+            var selection = AnsiConsole.Prompt(new SelectionPrompt<Tarefa>()
+                .Title("Escolha uma tarefa")
+                .PageSize(5)
+                .AddChoices(tarefaService.GetTarefasPorListas(listas))
+                .UseConverter(tarefa => $"{tarefa.TarefaId}: {tarefa.Nome}"));
 
-            table.Configure(o => o.EnableCount = false)
-                .Write(Format.Minimal);
-
-            int TarefaId;
-            bool idValido = false;
-
-            do
-            {
-                Console.Write("Informe o Id da tarefa:");
-
-                if (int.TryParse(Console.ReadLine(), out TarefaId))
-                {
-                    idValido = tarefaService.GetAll().Any(tarefa => tarefa.TarefaId == TarefaId);
-
-                    if (!idValido)
-                        Console.WriteLine("Por favor, informe um Id válido.");
-                }
-            } while (!idValido);
-
-            return TarefaId;
+            return selection.TarefaId;
         }
     }
 }

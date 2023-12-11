@@ -76,3 +76,4 @@ C:\Users\SWA\Desktop\GerenciadorTarefas\TestePoo\obj\Debug\net7.0\refint\TestePo
 C:\Users\SWA\Desktop\GerenciadorTarefas\TestePoo\obj\Debug\net7.0\TestePoo.pdb
 C:\Users\SWA\Desktop\GerenciadorTarefas\TestePoo\obj\Debug\net7.0\TestePoo.genruntimeconfig.cache
 C:\Users\SWA\Desktop\GerenciadorTarefas\TestePoo\obj\Debug\net7.0\ref\TestePoo.dll
+C:\Users\Gouveia\RiderProjects\GerenciadorTarefas\TestePoo\bin\Debug\net7.0\Spectre.Console.dll

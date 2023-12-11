@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore.Migrations;
 using TestePoo.Data;
 using TestePoo.Repositories;
 using TestePoo.Services;

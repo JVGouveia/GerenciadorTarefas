@@ -20,6 +20,16 @@ namespace TestePoo.Data
                 .Property(e => e.DataLimite)
                 .HasColumnType("datetime")
                 .HasDefaultValueSql("CURRENT_TIMESTAMP");
+            
+            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+            {
+                foreach (var navigation in entityType.GetNavigations())
+                {
+                    navigation.ForeignKey.DeleteBehavior = DeleteBehavior.Restrict;
+                }
+            }
+
+            base.OnModelCreating(modelBuilder);
         }
     }
 }

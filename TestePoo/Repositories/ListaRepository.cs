@@ -1,5 +1,6 @@
 ﻿using ConsoleTables;
 using Microsoft.EntityFrameworkCore;
+using Spectre.Console;
 using TestePoo.Models;
 using TestePoo.Services;
 
@@ -19,33 +20,16 @@ public class ListaRepository : Repository<Lista>
     
     public int EscolherLista(ListaService listaService, Usuario usuario)
     {
+        var listas = listaService.GetListasPorUsuario(usuario.UsuarioId);
+        
         Console.WriteLine("\nListas:");
-        var table = new ConsoleTable("Id", "Nome");
 
-        foreach (var x in listaService.GetListasPorUsuario(usuario.UsuarioId))
-        {
-            table.AddRow($"{x.ListaId.ToString()}", $"{x.Nome}");
-        }
+        var selection = AnsiConsole.Prompt(new SelectionPrompt<Lista>()
+            .Title("Escolha uma lista")
+            .PageSize(5)
+            .AddChoices(listas)
+            .UseConverter(lista => $"{lista.ListaId}: {lista.Nome}"));
 
-        table.Configure(o => o.EnableCount = false)
-            .Write(Format.Minimal);
-
-        int ListaId;
-        bool idValido = false;
-
-        do
-        {
-            Console.Write("Informe o Id da lista:");
-
-            if (int.TryParse(Console.ReadLine(), out ListaId))
-            {
-                idValido = listaService.GetAll().Any(l => l.ListaId == ListaId);
-
-                if (!idValido)
-                    Console.WriteLine("Por favor, informe um Id válido.");
-            }
-        } while (!idValido);
-
-        return ListaId;
+        return selection.ListaId;
     }
 }

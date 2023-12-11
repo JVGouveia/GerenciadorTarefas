@@ -95,14 +95,20 @@ namespace TestePoo.Services
         {
             string email, senha;
             Usuario? databaseUsuario;
+    
+            var usuariosNoBanco = GetAll(); 
 
-            Console.WriteLine();
+            if (usuariosNoBanco == null || !usuariosNoBanco.Any())
+            {
+                Console.WriteLine("Não existem usuários no banco de dados. Registre-se antes de prosseguir.");
+                return null;
+            }
 
             while (true)
             {
                 Console.WriteLine("Informe seu Email:");
                 email = Console.ReadLine();
-                
+        
                 while (string.IsNullOrEmpty(email) || !ValidaEmail(email))
                 {
                     Console.WriteLine("Email não pode estar vazio ou não é um formato válido! Digite novamente:");
@@ -128,6 +134,7 @@ namespace TestePoo.Services
 
             return databaseUsuario;
         }
+
 
         public Usuario GetById(int id)
         {

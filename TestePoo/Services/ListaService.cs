@@ -22,10 +22,10 @@ namespace TestePoo.Services
             
             while (true)
             {
-                Console.WriteLine("Informe o nome da lista");
+                Console.Write("Informe o nome da lista: ");
                 nome = Console.ReadLine();
                 if (string.IsNullOrEmpty(nome.Trim()))
-                    Console.WriteLine("Nome não pode estar vázio! Digite novamente:");
+                    Console.Write("Nome não pode estar vázio! Digite novamente: ");
                 else
                     break;
             }
@@ -38,13 +38,14 @@ namespace TestePoo.Services
                     _listaRepository.Add(lista);
                     transaction.Commit();
                     Console.Clear();
-                    Console.WriteLine("Lista adicionada com sucesso");
+                    Console.Write("Lista adicionada com sucesso!");
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine($"Erro ao criar a lista: {e.Message}");
+                    Console.Clear();
+                    Console.Write($"Erro ao criar a lista: {e.Message}");
                     transaction.Rollback();
-                    throw;
+                    ;
                 }
             }
         }
@@ -71,6 +72,16 @@ namespace TestePoo.Services
 
         public void Delete(ListaService listaService, Usuario usuario)
         {
+            
+            var listasDoUsuario = GetListasPorUsuario(usuario.UsuarioId);
+
+            if (!listasDoUsuario.Any())
+            {
+                Console.Clear();
+                Console.Write("Não há listas para excluir.");
+                return;
+            }
+            
             int ListaId = EscolherLista(listaService, usuario);
 
             
@@ -79,12 +90,12 @@ namespace TestePoo.Services
             {
                 Delete(ListaId);
                 Console.Clear();
-                Console.WriteLine("Tarefa excluída com sucesso");
+                Console.Write("Tarefa excluída com sucesso!");
             }
             else
             {
                 Console.Clear();
-                Console.WriteLine("Você não tem permissão para excluir esta tarefa ou a tarefa não existe.");
+                Console.Write("Você não tem permissão para excluir esta tarefa ou a tarefa não existe.");
             }
         }
         
@@ -100,6 +111,16 @@ namespace TestePoo.Services
         
         public void UpdateLista(DataContext? context, ListaService listaService, Usuario usuario)
         {
+            
+            var listasDoUsuario = GetListasPorUsuario(usuario.UsuarioId);
+
+            if (!listasDoUsuario.Any())
+            {
+                Console.Clear();
+                Console.Write("Não há listas para atualizar.");
+                return;
+            }
+            
             int listaId = listaService.EscolherLista(listaService, usuario);
             string nome;
 
@@ -107,13 +128,14 @@ namespace TestePoo.Services
 
             if (usuarioDaLista != usuario.UsuarioId)
             {
-                Console.WriteLine("Você não tem permissão para atualizar esta lista.");
+                Console.Clear();
+                Console.Write("Você não tem permissão para atualizar esta lista.");
                 return;
             }
             
             do
             {
-                Console.Write("Informe o novo nome para a lista:");
+                Console.Write("Informe o novo nome para a lista: ");
                 nome = Console.ReadLine();
             } while (string.IsNullOrWhiteSpace(nome));
             
@@ -128,13 +150,14 @@ namespace TestePoo.Services
                     listaService.Update(listaAtualizada);
                     transaction.Commit();
                     Console.Clear();
-                    Console.WriteLine("Lista alterada com sucesso");
+                    Console.Write("Lista alterada com sucesso!");
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine($"Erro ao atualizar a lista: {e.Message}");
+                    Console.Clear();
+                    Console.Write($"Erro ao atualizar a lista: {e.Message}");
                     transaction.Rollback();
-                    throw;
+                    ;
                 }
             }
         }
@@ -156,7 +179,8 @@ namespace TestePoo.Services
             }
             else 
             {
-                Console.WriteLine("Não há listas nesse usuario.");
+                Console.Clear();
+                Console.Write("Você não possui nenhuma lista.");
             }
         }
     }
