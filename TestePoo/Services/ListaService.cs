@@ -2,14 +2,15 @@
 using TestePoo.Data;
 using TestePoo.Interfaces;
 using TestePoo.Models;
+using TestePoo.Repositories;
 
 namespace TestePoo.Services
 {
     public class ListaService
     {
-        private readonly IRepository<Lista> _listaRepository;
+        private readonly ListaRepository _listaRepository;
 
-        public ListaService(IRepository<Lista> listaRepository)
+        public ListaService(ListaRepository listaRepository)
         {
             _listaRepository = listaRepository;
         }
@@ -64,6 +65,16 @@ namespace TestePoo.Services
         public void Delete(int id)
         {
             _listaRepository.Delete(id);
+        }
+        
+        public List<Lista> GetListasPorUsuario(int usuarioId)
+        {
+            return _listaRepository.GetListasPorUsuario(usuarioId);
+        }
+
+        public int EscolherLista(ListaService listaService, Usuario usuario)
+        {
+            return _listaRepository.EscolherLista(listaService, usuario);
         }
     }
 }

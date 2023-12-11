@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using ConsoleTables;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using TestePoo.Data;
 using TestePoo.Interfaces;
@@ -18,9 +19,9 @@ namespace TestePoo
             {
                 context.Database.EnsureCreated();
 
-                var tarefaService = new TarefaService(new Repository<Tarefa>(context), new Repository<Lista>(context));
-                var usuarioService = new UsuarioService(new Repository<Usuario>(context));
-                var listaService = new ListaService(new Repository<Lista>(context));
+                var tarefaService = new TarefaService(new TarefaRepository(context), new ListaRepository(context));
+                var usuarioService = new UsuarioService(new UsuarioRepository(context));
+                var listaService = new ListaService(new ListaRepository(context));
 
                 while (true)
                 {
@@ -28,16 +29,14 @@ namespace TestePoo
                     Console.WriteLine("1. Já possuo cadastro");
                     Console.WriteLine("2. Quero me cadastrar");
                     Console.WriteLine("3. Sair");
-
-                    int opcao = LerOpcao();
-
-                    switch (opcao)
+                    
+                    switch (LerOpcao())
                     {
                         case 1:
                             usuarioAtual = usuarioService.ValidarUsuario(context);
                             if (usuarioAtual != null)
                             {
-                                MenuUsuario(usuarioAtual);
+                                MenuUsuario(tarefaService, listaService, usuarioService, context);
                             }
                             break;
                         case 2:
@@ -54,28 +53,26 @@ namespace TestePoo
                 }
             }
         }
-        static void MenuUsuario(Usuario usuario)
+        static void MenuUsuario(TarefaService tarefaService, ListaService listaService, UsuarioService usuarioService, DataContext? context)
     {
         while (true)
         {
-            Console.WriteLine($"\n=== Menu do Usuário {usuario.Nome} ===");
+            Console.WriteLine($"\n=== Menu do Usuário ===");
             Console.WriteLine("1. Operações em Tarefas");
             Console.WriteLine("2. Operações em Listas");
             Console.WriteLine("3. Visualizar informações do usuário");
             Console.WriteLine("4. Sair");
-
-            int opcao = LerOpcao();
-
-            switch (opcao)
+            
+            switch (LerOpcao())
             {
                 case 1:
-                    MenuTarefas();
+                    MenuTarefas(tarefaService, listaService, context);
                     break;
                 case 2:
                     MenuListas();
                     break;
                 case 3:
-                    Console.WriteLine($"ID: {usuario.UsuarioId}, Nome: {usuario.Nome}, Email: {usuario.Email}");
+                    Console.WriteLine($"ID: {usuarioAtual.UsuarioId}, Nome: {usuarioAtual.Nome}, Email: {usuarioAtual.Email}");
                     break;
                 case 4:
                     Console.WriteLine("Saindo do menu do usuário.");
@@ -87,7 +84,7 @@ namespace TestePoo
         }
     }
 
-    static void MenuTarefas()
+    static void MenuTarefas(TarefaService tarefaService, ListaService listaService, DataContext? context)
     {
         while (true)
         {
@@ -95,29 +92,66 @@ namespace TestePoo
             Console.WriteLine("1. Adicionar Tarefa");
             Console.WriteLine("2. Atualizar Tarefa");
             Console.WriteLine("3. Excluir Tarefa");
-            Console.WriteLine("5. Buscar Tarefa por Usuário");
-            Console.WriteLine("6. Voltar ao Menu do Usuário");
-
-            int opcao = LerOpcao();
-
-            switch (opcao)
+            Console.WriteLine("4. Buscar todas Tarefas");
+            Console.WriteLine("5. Buscar Tarefa por Lista");
+            Console.WriteLine("6. Buscar Tarefa por Usuário");
+            Console.WriteLine("7. Voltar ao Menu do Usuário");
+            
+            switch (LerOpcao())
             {
                 case 1:
-                    // Implementar lógica para adicionar tarefa
+                    tarefaService.Add(context, usuarioAtual);
                     break;
                 case 2:
-                    // Implementar lógica para atualizar tarefa
+                    tarefaService.UpdateTarefa(context,tarefaService, listaService, usuarioAtual);
                     break;
                 case 3:
-                    // Implementar lógica para excluir tarefa
+                    Console.WriteLine("\nTarefas:");
+                    var table = new ConsoleTable("Id", "Nome");
+
+                    foreach (var tarefa in tarefaService.GetTarefasPorListas(listaService.GetListasPorUsuario(usuarioAtual.UsuarioId)))
+                    {
+                        table.AddRow($"{tarefa.TarefaId.ToString()}", $"{tarefa.Nome}");
+                    }
+                    table.Configure(o => o.EnableCount = false)
+                        .Write(Format.Minimal);
+
+                    int TarefaId;
+                    bool idValido = false;
+
+                    do
+                    {
+                        Console.Write("Informe o Id da lista:");
+
+                        if (int.TryParse(Console.ReadLine(), out TarefaId))
+                        {
+                            idValido = tarefaService.GetAll().Any(tarefa => tarefa.TarefaId == TarefaId);
+
+                            if (!idValido)
+                                Console.WriteLine("Por favor, informe um Id válido.");
+                        }
+                    } while (!idValido);
+                    
+                    tarefaService.Delete(TarefaId);
                     break;
                 case 4:
-                    // Implementar lógica para buscar tarefa por lista
+                    Console.WriteLine("\nTarefas:");
+                    var tarefas = new ConsoleTable("Id", "Nome", "Status");
+
+                    foreach (var tarefa in tarefaService.GetTarefasPorListas(listaService.GetListasPorUsuario(usuarioAtual.UsuarioId)))
+                    {
+                        tarefas.AddRow($"{tarefa.TarefaId.ToString()}", $"{tarefa.Nome}", $"{(tarefa.Status == 0 ? "Pendente" : "Concluida")}", $"{listaService.GetById(tarefa.TarefaId).Nome}");
+                    }
+                    tarefas.Configure(o => o.EnableCount = false)
+                        .Write(Format.Minimal);                  
                     break;
                 case 5:
-                    // Implementar lógica para buscar tarefa por usuário
+                    // Implementar lógica para buscar tarefa por lista
                     break;
                 case 6:
+                    // Implementar lógica para buscar tarefa por usuário
+                    break;
+                case 7:
                     Console.WriteLine("Voltando ao Menu do Usuário.");
                     return;
                 default:
@@ -126,7 +160,7 @@ namespace TestePoo
             }
         }
     }
-    
+
     static void MenuListas()
     {
         while (true)

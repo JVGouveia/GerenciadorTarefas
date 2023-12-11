@@ -5,19 +5,19 @@ namespace TestePoo.Repositories;
 
 public class Repository<T> : IRepository<T> where T : class
 {
-    private readonly DbContext _context;
+    protected static DbContext? Context { get; set; }
     private readonly DbSet<T> _dbSet;
 
-    public Repository(DbContext context)
+    public Repository(DbContext? context)
     {
-        _context = context ?? throw new ArgumentNullException(nameof(context));
-        _dbSet = _context.Set<T>();
+        Context = context ?? throw new ArgumentNullException(nameof(context));
+        _dbSet = Context.Set<T>();
     }
 
     public void Add(T entity)
     {
         _dbSet.Add(entity);
-        _context.SaveChanges();
+        Context.SaveChanges();
     }
 
     public T GetById(int id)
@@ -33,7 +33,7 @@ public class Repository<T> : IRepository<T> where T : class
     public void Update(T entity)
     {
         _dbSet.Update(entity);
-        _context.SaveChanges();
+        Context.SaveChanges();
     }
 
     public void Delete(int id)
@@ -42,13 +42,13 @@ public class Repository<T> : IRepository<T> where T : class
         if (entity != null)
         {
             _dbSet.Remove(entity);
-            _context.SaveChanges();
+            Context.SaveChanges();
         }
     }
     
     public T ExisteNaBaseDeDados(string tabela, string coluna, string dado)
     {
-        var a = _context.Set<T>()
+        var a = Context.Set<T>()
             .FromSqlRaw($"SELECT * FROM {tabela} Where {coluna} =  '{dado}'")
             .ToList().FirstOrDefault();
 

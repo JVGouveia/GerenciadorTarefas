@@ -3,24 +3,26 @@ using ConsoleTables;
 using TestePoo.Data;
 using TestePoo.Interfaces;
 using TestePoo.Models;
+using TestePoo.Repositories;
 
 namespace TestePoo.Services
 {
     public class TarefaService
     {
-        private readonly IRepository<Tarefa> _tarefaRepository;
-        private readonly IRepository<Lista> _listaRepository;
+        private readonly TarefaRepository _tarefaRepository;
+        private readonly ListaRepository _listaRepository;
 
-        public TarefaService(IRepository<Tarefa> tarefaRepository, IRepository<Lista> listaRepository)
+        
+        public TarefaService(TarefaRepository tarefaRepository, ListaRepository listaRepository)
         {
             _tarefaRepository = tarefaRepository;
             _listaRepository = listaRepository;
         }
 
-        public void Add(DataContext context)
+        public void Add(DataContext? context, Usuario usuario)
         {
             string nome, descricao;
-            DateTime dataLimite;
+            DateTime dataLimite = default;
 
             Console.WriteLine("Informe o nome da tarefa:");
             nome = Console.ReadLine();
@@ -33,40 +35,38 @@ namespace TestePoo.Services
                 Console.WriteLine("Informe a data limite da tarefa no formato dia/mes/ano (pode ser vazia):");
                 string inputDataLimite = Console.ReadLine();
 
-                if (DateTime.TryParse(inputDataLimite, out DateTime result))
+                if (string.IsNullOrWhiteSpace(inputDataLimite))
                 {
-                    dataLimite = result;
                     break;
                 }
 
-                Console.WriteLine("Formato de data inválido! Digite novamente.");
-            }
-
-            Console.WriteLine("\nListas:");
-            var table = new ConsoleTable("Id", "Nome");
-
-            foreach (var lista in _listaRepository.GetAll())
-            {
-                table.AddRow($"{lista.ListaId}", $"{lista.Nome}");
-            }
-            table.Configure(o => o.EnableCount = false)
-                .Write(Format.Minimal);
-
-            int listaId;
-            bool idValido = false;
-
-            do
-            {
-                Console.Write("Informe o Id da lista:");
-
-                if (int.TryParse(Console.ReadLine(), out listaId))
+                if (DateTime.TryParse(inputDataLimite, out DateTime result))
                 {
-                    idValido = _listaRepository.GetAll().Any(lista => lista.ListaId == listaId);
+                    DateTime dataAtual = DateTime.Now;
 
-                    if (!idValido)
-                        Console.WriteLine("Por favor, informe um Id válido da lista.");
+                    // Verifica se a data é anterior à data atual
+                    if (result < dataAtual)
+                    {
+                        Console.WriteLine("A data não pode ser anterior à data atual. Digite novamente.");
+                    }
+                    // Verifica se a data é mais de um ano após a data atual
+                    else if (result > dataAtual.AddYears(1))
+                    {
+                        Console.WriteLine("A data não pode ser mais de um ano após a data atual. Digite novamente.");
+                    }
+                    else
+                    {
+                        dataLimite = result;
+                        break; 
+                    }
                 }
-            } while (!idValido);
+                else
+                {
+                    Console.WriteLine("Formato de data inválido! Digite novamente.");
+                }
+            }
+
+            int listaId = _listaRepository.EscolherLista(new ListaService(_listaRepository), usuario);
 
             using (var transaction = context.Database.BeginTransaction())
             {
@@ -75,7 +75,8 @@ namespace TestePoo.Services
                     Tarefa tarefa = new Tarefa(nome, descricao, dataLimite, listaId);
                     _tarefaRepository.Add(tarefa);
                     transaction.Commit();
-                    // return tarefa;
+                    Console.Clear();
+                    Console.WriteLine("Tarefa adicionada com sucesso");
                 }
                 catch (Exception e)
                 {
@@ -104,6 +105,96 @@ namespace TestePoo.Services
         public void Delete(int id)
         {
             _tarefaRepository.Delete(id);
+            Console.Clear();
+            Console.WriteLine("Tarefa excluida com sucesso");
         }
+        
+        public List<Tarefa> GetTarefasPorListas(List<Lista> listas)
+        {
+            return _tarefaRepository.GetTarefasPorListas(listas);
+        }
+
+        public int EscolherTarefa(TarefaService tarefaService, ListaService listaService, Usuario usuario)
+        {
+            return _tarefaRepository.EscolherTarefa(tarefaService, listaService, usuario);
+        }
+        
+        public void UpdateTarefa(DataContext? context, TarefaService tarefaService, ListaService listaService, Usuario usuario)
+    {
+        var tarefaId = tarefaService.EscolherTarefa(tarefaService, listaService, usuario);
+
+        Console.Write("Informe o nome (deixe vazio caso não deseje alterar):");
+        var nome = Console.ReadLine();
+
+        Console.Write("Informe a descrição (deixe vazio caso não deseje alterar):");
+        var descricao = Console.ReadLine();
+
+        DateTime? dataLimite = null;
+        Console.Write("Informe a data limite (opcional - formato dd/MM/yyyy): ");
+        var dataLimiteStr = Console.ReadLine();
+
+        if (!string.IsNullOrEmpty(dataLimiteStr))
+        {
+            if (DateTime.TryParseExact(dataLimiteStr, "dd/MM/yyyy", null, System.Globalization.DateTimeStyles.None,
+                    out var parsedDataLimite))
+            {
+                DateTime dataAtual = DateTime.Now;
+
+                // Verificar se a data é anterior à data atual
+                if (parsedDataLimite < dataAtual)
+                {
+                    Console.WriteLine("A data não pode ser anterior à data atual. A data não será alterada.");
+                }
+                // Verificar se a data é mais de um ano após a data atual
+                else if (parsedDataLimite > dataAtual.AddYears(1))
+                {
+                    Console.WriteLine("A data não pode ser mais de um ano após a data atual. A data não será alterada.");
+                }
+                else
+                {
+                    dataLimite = parsedDataLimite;
+                }
+            }
+            else
+            {
+                Console.WriteLine("Formato de data inválido. A data não será alterada.");
+            }
+        }
+
+        Console.Write("Informe o status (deixe vazio caso não deseje alterar - Pendente ou Concluida):");
+        var status = Console.ReadLine();
+        while (status.ToLower() != "pendente" && status.ToLower() != "concluida" && !string.IsNullOrWhiteSpace(status))
+        {
+            Console.WriteLine(status.ToLower());
+            Console.Write("Status inválido, Informe novamente: ");
+            status = Console.ReadLine();
+        }
+
+        var listaId = listaService.EscolherLista(listaService, usuario);
+
+        using (var transaction = context.Database.BeginTransaction())
+        {
+            try
+            {
+                tarefaService.Update(new Tarefa(tarefaId,
+                    string.IsNullOrEmpty(nome) ? tarefaService.GetById(tarefaId).Nome : nome,
+                    string.IsNullOrEmpty(descricao) ? tarefaService.GetById(tarefaId).Descricao : descricao,
+                    dataLimite ?? tarefaService.GetById(tarefaId).DataLimite,
+                    (string.IsNullOrEmpty(status)
+                        ? tarefaService.GetById(tarefaId).Status
+                        : (status.ToLower() == "pendente" ? 0 : 1)),
+                    listaId));
+                transaction.Commit();
+                Console.Clear();
+                Console.Write("Tarefa alterada com sucesso");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Erro ao atualizar a tarefa: {e.Message}");
+                transaction.Rollback();
+                throw;
+            }
+        }
+    }
     }
 }

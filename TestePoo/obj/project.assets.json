@@ -5705,19 +5705,24 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\SWA\\.nuget\\packages\\": {}
+    "C:\\Users\\Gouveia\\.nuget\\packages\\": {},
+    "D:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\SWA\\Desktop\\GerenciadorTarefas\\TestePoo\\TestePoo.csproj",
+      "projectUniqueName": "C:\\Users\\Gouveia\\RiderProjects\\GerenciadorTarefas\\TestePoo\\TestePoo.csproj",
       "projectName": "TestePoo",
-      "projectPath": "C:\\Users\\SWA\\Desktop\\GerenciadorTarefas\\TestePoo\\TestePoo.csproj",
-      "packagesPath": "C:\\Users\\SWA\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\SWA\\Desktop\\GerenciadorTarefas\\TestePoo\\obj\\",
+      "projectPath": "C:\\Users\\Gouveia\\RiderProjects\\GerenciadorTarefas\\TestePoo\\TestePoo.csproj",
+      "packagesPath": "C:\\Users\\Gouveia\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Gouveia\\RiderProjects\\GerenciadorTarefas\\TestePoo\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "D:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
       "configFilePaths": [
-        "C:\\Users\\SWA\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Gouveia\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -5725,6 +5730,7 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {

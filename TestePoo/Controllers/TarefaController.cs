@@ -1,4 +1,5 @@
-﻿using TestePoo.Services;
+﻿using TestePoo.Models;
+using TestePoo.Services;
 
 namespace TestePoo.Controllers;
 

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TestePoo.Data;
 
@@ -10,9 +11,11 @@ using TestePoo.Data;
 namespace TestePoo.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20231209181225_ModifyEnum")]
+    partial class ModifyEnum
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -50,10 +53,8 @@ namespace TestePoo.Migrations
                         .HasColumnName("id_tarefa");
 
                     b.Property<DateTime>("DataLimite")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetime(6)")
-                        .HasColumnName("data_limite")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                        .HasColumnName("data_final");
 
                     b.Property<string>("Descricao")
                         .IsRequired()
@@ -70,8 +71,7 @@ namespace TestePoo.Migrations
                         .HasColumnName("nome");
 
                     b.Property<int>("Status")
-                        .HasColumnType("int")
-                        .HasColumnName("status");
+                        .HasColumnType("int");
 
                     b.HasKey("TarefaId");
 

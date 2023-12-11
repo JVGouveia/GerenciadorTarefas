@@ -14,6 +14,11 @@ namespace TestePoo.Data
             var serverVersion = ServerVersion.AutoDetect("server=localhost;user=root;password=1234;database=tarefas");
             optionsBuilder.UseMySql("server=localhost;user=root;password=1234;database=tarefas", serverVersion);
         }
-
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Tarefa>()
+                .Property(e => e.DataLimite)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP");
+        }
     }
 }

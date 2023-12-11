@@ -4,14 +4,15 @@ using System.Text.RegularExpressions;
 using TestePoo.Data;
 using TestePoo.Interfaces;
 using TestePoo.Models;
+using TestePoo.Repositories;
 
 namespace TestePoo.Services
 {
     public class UsuarioService
     {
-        private readonly IRepository<Usuario> _usuarioRepository;
+        private readonly UsuarioRepository _usuarioRepository;
 
-        public UsuarioService(IRepository<Usuario> usuarioRepository)
+        public UsuarioService(UsuarioRepository usuarioRepository)
         {
             _usuarioRepository = usuarioRepository;
         }
@@ -25,7 +26,7 @@ namespace TestePoo.Services
             return regex.IsMatch(email);
         }
 
-        public Usuario Add(DataContext context)
+        public Usuario Add(DataContext? context)
         {
             string nome;
             string email;
@@ -92,7 +93,7 @@ namespace TestePoo.Services
             }
         }
         
-        public Usuario? ValidarUsuario(DataContext context)
+        public Usuario? ValidarUsuario(DataContext? context)
         {
             string email, senha;
             Usuario? databaseUsuario;
