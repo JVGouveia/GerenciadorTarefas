@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Text.RegularExpressions;
 using TestePoo.Data;
-using TestePoo.Interfaces;
 using TestePoo.Models;
 using TestePoo.Repositories;
 

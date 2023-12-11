@@ -14,7 +14,7 @@ namespace TestePoo.Migrations
             migrationBuilder.AlterColumn<DateTime>(
                 name: "data_limite",
                 table: "tb_tarefa",
-                type: "datetime(6)",
+                type: "datetime",
                 nullable: false,
                 defaultValueSql: "CURRENT_TIMESTAMP",
                 oldClrType: typeof(DateTime),
@@ -30,7 +30,7 @@ namespace TestePoo.Migrations
                 type: "datetime(6)",
                 nullable: false,
                 oldClrType: typeof(DateTime),
-                oldType: "datetime(6)",
+                oldType: "datetime",
                 oldDefaultValueSql: "CURRENT_TIMESTAMP");
         }
     }

@@ -51,7 +51,7 @@ namespace TestePoo.Migrations
 
                     b.Property<DateTime>("DataLimite")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime(6)")
+                        .HasColumnType("datetime")
                         .HasColumnName("data_limite")
                         .HasDefaultValueSql("CURRENT_TIMESTAMP");
 

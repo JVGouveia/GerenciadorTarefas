@@ -11,7 +11,7 @@ using TestePoo.Data;
 namespace TestePoo.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20231211035500_ModifyDate2")]
+    [Migration("20231211040213_ModifyDate2")]
     partial class ModifyDate2
     {
         /// <inheritdoc />
@@ -54,7 +54,7 @@ namespace TestePoo.Migrations
 
                     b.Property<DateTime>("DataLimite")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime(6)")
+                        .HasColumnType("datetime")
                         .HasColumnName("data_limite")
                         .HasDefaultValueSql("CURRENT_TIMESTAMP");
 

@@ -19,6 +19,13 @@ namespace TestePoo.Repositories
                 .Where(tarefa => listaIds.Contains(tarefa.ListaId))
                 .ToList();
         }
+        
+        public List<Tarefa> GetTarefasPorLista(Lista lista)
+        {
+            return Context.Set<Tarefa>()
+                .Where(tarefa => tarefa.ListaId == lista.ListaId)
+                .ToList();
+        }
 
         public void Update(Tarefa tarefa)
         {

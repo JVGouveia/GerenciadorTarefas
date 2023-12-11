@@ -18,6 +18,7 @@ namespace TestePoo.Data
         {
             modelBuilder.Entity<Tarefa>()
                 .Property(e => e.DataLimite)
+                .HasColumnType("datetime")
                 .HasDefaultValueSql("CURRENT_TIMESTAMP");
         }
     }

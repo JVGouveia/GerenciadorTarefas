@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using ConsoleTables;
 using TestePoo.Data;
 using TestePoo.Interfaces;
 using TestePoo.Models;
@@ -17,7 +18,7 @@ namespace TestePoo.Services
         
         public void Add(DataContext context, Usuario? usuario)
         {
-            string nome;
+            string? nome;
             
             while (true)
             {
@@ -36,7 +37,8 @@ namespace TestePoo.Services
                     Lista lista = new Lista(nome, usuario.UsuarioId);
                     _listaRepository.Add(lista);
                     transaction.Commit();
-                    // return lista;
+                    Console.Clear();
+                    Console.WriteLine("Lista adicionada com sucesso");
                 }
                 catch (Exception e)
                 {
@@ -61,10 +63,29 @@ namespace TestePoo.Services
         {
             _listaRepository.Update(lista);
         }
-
+        
         public void Delete(int id)
         {
             _listaRepository.Delete(id);
+        }
+
+        public void Delete(ListaService listaService, Usuario usuario)
+        {
+            int ListaId = EscolherLista(listaService, usuario);
+
+            
+            Lista listaParaExcluir = GetById(ListaId);
+            if (listaParaExcluir != null && GetById(listaParaExcluir.ListaId).UsuarioId == usuario.UsuarioId)
+            {
+                Delete(ListaId);
+                Console.Clear();
+                Console.WriteLine("Tarefa excluída com sucesso");
+            }
+            else
+            {
+                Console.Clear();
+                Console.WriteLine("Você não tem permissão para excluir esta tarefa ou a tarefa não existe.");
+            }
         }
         
         public List<Lista> GetListasPorUsuario(int usuarioId)
@@ -75,6 +96,68 @@ namespace TestePoo.Services
         public int EscolherLista(ListaService listaService, Usuario usuario)
         {
             return _listaRepository.EscolherLista(listaService, usuario);
+        }
+        
+        public void UpdateLista(DataContext? context, ListaService listaService, Usuario usuario)
+        {
+            int listaId = listaService.EscolherLista(listaService, usuario);
+            string nome;
+
+            int usuarioDaLista = GetById(listaId).UsuarioId;
+
+            if (usuarioDaLista != usuario.UsuarioId)
+            {
+                Console.WriteLine("Você não tem permissão para atualizar esta lista.");
+                return;
+            }
+            
+            do
+            {
+                Console.Write("Informe o novo nome para a lista:");
+                nome = Console.ReadLine();
+            } while (string.IsNullOrWhiteSpace(nome));
+            
+            using (var transaction = context.Database.BeginTransaction())
+            {
+                try
+                {
+                    Lista listaAtualizada = listaService.GetById(listaId);
+                    
+                    listaAtualizada.Nome = nome;
+                    
+                    listaService.Update(listaAtualizada);
+                    transaction.Commit();
+                    Console.Clear();
+                    Console.WriteLine("Lista alterada com sucesso");
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine($"Erro ao atualizar a lista: {e.Message}");
+                    transaction.Rollback();
+                    throw;
+                }
+            }
+        }
+        public void GetAllListas(ListaService listaService, Usuario usuario)
+        {
+            var listas = listaService.GetListasPorUsuario(usuario.UsuarioId);
+            if (listas.Any())
+            {
+                Console.WriteLine("\nListas:");
+                var listasT = new ConsoleTable("Id", "Nome");
+
+                foreach (var lista in listas)
+                {
+                    listasT.AddRow($"{lista.ListaId.ToString()}", $"{lista.Nome}");
+                }
+
+                listasT.Configure(o => o.EnableCount = false)
+                    .Write(Format.Minimal);
+            }
+            else 
+            {
+                Console.WriteLine("Não há listas nesse usuario.");
+            }
         }
     }
 }

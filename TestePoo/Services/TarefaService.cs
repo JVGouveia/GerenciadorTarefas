@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using ConsoleTables;
 using TestePoo.Data;
 using TestePoo.Interfaces;
@@ -102,16 +103,34 @@ namespace TestePoo.Services
             _tarefaRepository.Update(tarefa);
         }
 
-        public void Delete(int id)
+        public void Delete(TarefaService tarefaService, ListaService listaService, Usuario usuario)
         {
-            _tarefaRepository.Delete(id);
-            Console.Clear();
-            Console.WriteLine("Tarefa excluida com sucesso");
+            int TarefaId = EscolherTarefa(tarefaService, listaService, usuario);
+
+            
+            Tarefa tarefaParaExcluir = _tarefaRepository.GetById(TarefaId);
+            if (tarefaParaExcluir != null && _listaRepository.GetById(tarefaParaExcluir.ListaId).UsuarioId == usuario.UsuarioId)
+            {
+                _tarefaRepository.Delete(TarefaId);
+                Console.Clear();
+                Console.WriteLine("Tarefa excluída com sucesso");
+            }
+            else
+            {
+                Console.Clear();
+                Console.WriteLine("Você não tem permissão para excluir esta tarefa ou a tarefa não existe.");
+            }
         }
+
         
         public List<Tarefa> GetTarefasPorListas(List<Lista> listas)
         {
             return _tarefaRepository.GetTarefasPorListas(listas);
+        }
+        
+        public List<Tarefa> GetTarefasPorLista(Lista lista)
+        {
+            return _tarefaRepository.GetTarefasPorLista(lista);
         }
 
         public int EscolherTarefa(TarefaService tarefaService, ListaService listaService, Usuario usuario)
@@ -120,9 +139,18 @@ namespace TestePoo.Services
         }
         
         public void UpdateTarefa(DataContext? context, TarefaService tarefaService, ListaService listaService, Usuario usuario)
-    {
+        {
+            
         var tarefaId = tarefaService.EscolherTarefa(tarefaService, listaService, usuario);
 
+        var usuarioDaTarefa = listaService.GetById(GetById(tarefaId).ListaId).UsuarioId; 
+
+        if (usuarioDaTarefa != usuario.UsuarioId)
+        {
+            Console.WriteLine("Você não tem permissão para atualizar esta tarefa.");
+            return;
+        }
+        
         Console.Write("Informe o nome (deixe vazio caso não deseje alterar):");
         var nome = Console.ReadLine();
 
@@ -195,6 +223,60 @@ namespace TestePoo.Services
                 throw;
             }
         }
-    }
-    }
+        }
+        public void GetAllTarefas(TarefaService tarefaService, ListaService listaService, Usuario usuario)
+        {
+            var tarefasDaLista = tarefaService.GetTarefasPorListas(listaService.GetListasPorUsuario(usuario.UsuarioId));
+            if (tarefasDaLista.Any())
+            {
+                Console.WriteLine("\nTarefas:");
+                var tarefas = new ConsoleTable("Id", "Nome", "Status");
+
+                foreach (var tarefa in tarefasDaLista)
+                {
+                    tarefas.AddRow($"{tarefa.TarefaId.ToString()}", $"{tarefa.Nome}",
+                        $"{(tarefa.Status == 0 ? "Pendente" : "Concluida")}");
+                }
+
+                tarefas.Configure(o => o.EnableCount = false)
+                    .Write(Format.Minimal);
+            }
+            else 
+            {
+                Console.WriteLine("Não há tarefas nesta lista.");
+            }
+        }
+        
+        public void GetTarefasPorLista(TarefaService tarefaService, ListaService listaService, Usuario usuario)
+        {
+            Console.WriteLine("Selecione uma lista para exibir as tarefas:");
+            var lista = listaService.GetById(listaService.EscolherLista(listaService, usuario));
+            
+            Console.WriteLine($"Tarefas da Lista '{lista.Nome}':");
+
+            // Obter todas as tarefas associadas à lista
+            var tarefasDaLista = tarefaService.GetTarefasPorLista(lista);
+
+            if (tarefasDaLista.Any())
+            {
+                Console.WriteLine("\nTarefas:");
+                var tarefas = new ConsoleTable("Id", "Nome", "Status");
+
+                foreach (var tarefa in tarefasDaLista)
+                {
+                    tarefas.AddRow($"{tarefa.TarefaId.ToString()}", $"{tarefa.Nome}",
+                        $"{(tarefa.Status == 0 ? "Pendente" : "Concluida")}");
+                }
+
+                tarefas.Configure(o => o.EnableCount = false)
+                    .Write(Format.Minimal);
+            }
+            else
+            {
+                Console.WriteLine("Não há tarefas nesta lista.");
+            }
+            
+        }
+
+    } 
 }
