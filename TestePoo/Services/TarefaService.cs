@@ -25,22 +25,22 @@ namespace TestePoo.Services
             if (listasNoBanco == null || !listasNoBanco.Any())
             {
                 Console.Clear();
-                Console.Write("Você nao possui nenhuma lista. Crie uma lista antes de adicionar uma tarefa.");
+                Console.WriteLine("Você nao possui nenhuma lista. Crie uma lista antes de adicionar uma tarefa.");
                 return;
             }
         
             string nome, descricao;
             DateTime dataLimite = default;
         
-            Console.Write("Informe o nome da tarefa: ");
+            Console.WriteLine("Informe o nome da tarefa: ");
             nome = Console.ReadLine();
         
-            Console.Write("Informe a descrição da tarefa (pode ser vazia): ");
+            Console.WriteLine("Informe a descrição da tarefa (pode ser vazia): ");
             descricao = Console.ReadLine();
         
             while (true)
             {
-                Console.Write("Informe a data limite da tarefa no formato dia/mes/ano (pode ser vazia): ");
+                Console.WriteLine("Informe a data limite da tarefa no formato dia/mes/ano (pode ser vazia): ");
                 string inputDataLimite = Console.ReadLine();
         
                 if (string.IsNullOrWhiteSpace(inputDataLimite))
@@ -55,12 +55,12 @@ namespace TestePoo.Services
                     // Verifica se a data é anterior à data atual
                     if (result < dataAtual)
                     {
-                        Console.Write("A data não pode ser anterior à data atual. Digite novamente: ");
+                        Console.WriteLine("A data não pode ser anterior à data atual. Digite novamente: ");
                     }
                     // Verifica se a data é mais de um ano após a data atual
                     else if (result > dataAtual.AddYears(1))
                     {
-                        Console.Write("A data não pode ser mais de um ano após a data atual. Digite novamente: ");
+                        Console.WriteLine("A data não pode ser mais de um ano após a data atual. Digite novamente: ");
                     }
                     else
                     {
@@ -70,7 +70,7 @@ namespace TestePoo.Services
                 }
                 else
                 {
-                    Console.Write("Formato de data inválido! Digite novamente: ");
+                    Console.WriteLine("Formato de data inválido! Digite novamente: ");
                 }
             }
     
@@ -118,7 +118,7 @@ namespace TestePoo.Services
             if (!tarefasDaLista.Any())
             {
                 Console.Clear();
-                Console.Write("Não há tarefas para excluir.");
+                Console.WriteLine("Não há tarefas para excluir.");
                 return;
             }
             
@@ -130,12 +130,12 @@ namespace TestePoo.Services
                 {
                     _tarefaRepository.Delete(TarefaId);
                     Console.Clear();
-                    Console.Write("Tarefa excluída com sucesso!");
+                    Console.WriteLine("Tarefa excluída com sucesso!");
                 }
                 else
                 {
                     Console.Clear();
-                    Console.Write("Você não tem permissão para excluir esta tarefa ou a tarefa não existe.");
+                    Console.WriteLine("Você não tem permissão para excluir esta tarefa ou a tarefa não existe.");
                 }
             }
             catch (Exception ex)
@@ -168,7 +168,7 @@ namespace TestePoo.Services
             if (!tarefasDaLista.Any())
             {
                 Console.Clear();
-                Console.Write("Não há tarefas para modificar.");
+                Console.WriteLine("Não há tarefas para modificar.");
                 return;
             }
             
@@ -179,18 +179,18 @@ namespace TestePoo.Services
             if (usuarioDaTarefa != usuario.UsuarioId)
             {
                 Console.Clear();
-                Console.Write("Você não tem permissão para atualizar esta tarefa.");
+                Console.WriteLine("Você não tem permissão para atualizar esta tarefa.");
                 return;
             }
             
-            Console.Write("Informe o nome (deixe vazio caso não deseje alterar): ");
+            Console.WriteLine("Informe o nome (deixe vazio caso não deseje alterar): ");
             var nome = Console.ReadLine();
     
-            Console.Write("Informe a descrição (deixe vazio caso não deseje alterar): ");
+            Console.WriteLine("Informe a descrição (deixe vazio caso não deseje alterar): ");
             var descricao = Console.ReadLine();
     
             DateTime? dataLimite = null;
-            Console.Write("Informe a data limite (opcional - formato dd/MM/yyyy): ");
+            Console.WriteLine("Informe a data limite (opcional - formato dd/MM/yyyy): ");
             var dataLimiteStr = Console.ReadLine();
     
             if (!string.IsNullOrEmpty(dataLimiteStr))
@@ -203,12 +203,12 @@ namespace TestePoo.Services
                     // Verificar se a data é anterior à data atual
                     if (parsedDataLimite < dataAtual)
                     {
-                        Console.Write("A data não pode ser anterior à data atual. A data não será alterada.");
+                        Console.WriteLine("A data não pode ser anterior à data atual. A data não será alterada.");
                     }
                     // Verificar se a data é mais de um ano após a data atual
                     else if (parsedDataLimite > dataAtual.AddYears(1))
                     {
-                        Console.Write("A data não pode ser mais de um ano após a data atual. A data não será alterada.");
+                        Console.WriteLine("A data não pode ser mais de um ano após a data atual. A data não será alterada.");
                     }
                     else
                     {
@@ -217,15 +217,15 @@ namespace TestePoo.Services
                 }
                 else
                 {
-                    Console.Write("Formato de data inválido. A data não será alterada.");
+                    Console.WriteLine("Formato de data inválido. A data não será alterada.");
                 }
             }
     
-            Console.Write("Informe o status (deixe vazio caso não deseje alterar - Pendente ou Concluida): ");
+            Console.WriteLine("Informe o status (deixe vazio caso não deseje alterar - Pendente ou Concluida): ");
             var status = Console.ReadLine();
             while (status.ToLower() != "pendente" && status.ToLower() != "concluida" && !string.IsNullOrWhiteSpace(status))
             {
-                Console.Write("Status inválido, Informe novamente: ");
+                Console.WriteLine("Status inválido, Informe novamente: ");
                 status = Console.ReadLine();
             }
     
@@ -245,7 +245,7 @@ namespace TestePoo.Services
                         listaId));
                     transaction.Commit();
                     Console.Clear();
-                    Console.Write("Tarefa alterada com sucesso");
+                    Console.WriteLine("Tarefa alterada com sucesso");
                 }
                 catch (Exception e)
                 {
@@ -302,11 +302,11 @@ namespace TestePoo.Services
             if (listasNoBanco == null || !listasNoBanco.Any())
             {
                 Console.Clear();
-                Console.Write("Você nao possui nenhuma lista. Crie uma lista antes.");
+                Console.WriteLine("Você nao possui nenhuma lista. Crie uma lista antes.");
                 return;
             }
             
-            Console.Write("Selecione uma lista para exibir as tarefas: ");
+            Console.WriteLine("Selecione uma lista para exibir as tarefas: ");
             var lista = listaService.GetById(listaService.EscolherLista(listaService, usuario));
             
             Console.WriteLine($"Tarefas da Lista '{lista.Nome}':");
@@ -334,7 +334,7 @@ namespace TestePoo.Services
             else
             {
                 Console.Clear();
-                Console.Write("Não há tarefas nesta lista.");
+                Console.WriteLine("Não há tarefas nesta lista.");
             }
         }
         

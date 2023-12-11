@@ -37,6 +37,7 @@ C:\Users\Gouveia\RiderProjects\GerenciadorTarefas\TestePoo\obj\Debug\net7.0\Test
 C:\Users\Gouveia\RiderProjects\GerenciadorTarefas\TestePoo\obj\Debug\net7.0\TestePoo.genruntimeconfig.cache
 C:\Users\Gouveia\RiderProjects\GerenciadorTarefas\TestePoo\obj\Debug\net7.0\ref\TestePoo.dll
 C:\Users\Gouveia\RiderProjects\GerenciadorTarefas\TestePoo\bin\Debug\net7.0\ConsoleTables.dll
+C:\Users\Gouveia\RiderProjects\GerenciadorTarefas\TestePoo\bin\Debug\net7.0\Spectre.Console.dll
 C:\Users\SWA\Desktop\GerenciadorTarefas\TestePoo\bin\Debug\net7.0\TestePoo.exe
 C:\Users\SWA\Desktop\GerenciadorTarefas\TestePoo\bin\Debug\net7.0\TestePoo.deps.json
 C:\Users\SWA\Desktop\GerenciadorTarefas\TestePoo\bin\Debug\net7.0\TestePoo.runtimeconfig.json
@@ -64,6 +65,7 @@ C:\Users\SWA\Desktop\GerenciadorTarefas\TestePoo\bin\Debug\net7.0\Mono.TextTempl
 C:\Users\SWA\Desktop\GerenciadorTarefas\TestePoo\bin\Debug\net7.0\MySqlConnector.dll
 C:\Users\SWA\Desktop\GerenciadorTarefas\TestePoo\bin\Debug\net7.0\Pomelo.EntityFrameworkCore.MySql.dll
 C:\Users\SWA\Desktop\GerenciadorTarefas\TestePoo\bin\Debug\net7.0\Pomelo.EntityFrameworkCore.MySql.Design.dll
+C:\Users\SWA\Desktop\GerenciadorTarefas\TestePoo\bin\Debug\net7.0\Spectre.Console.dll
 C:\Users\SWA\Desktop\GerenciadorTarefas\TestePoo\bin\Debug\net7.0\System.CodeDom.dll
 C:\Users\SWA\Desktop\GerenciadorTarefas\TestePoo\obj\Debug\net7.0\TestePoo.csproj.AssemblyReference.cache
 C:\Users\SWA\Desktop\GerenciadorTarefas\TestePoo\obj\Debug\net7.0\TestePoo.GeneratedMSBuildEditorConfig.editorconfig
@@ -76,4 +78,3 @@ C:\Users\SWA\Desktop\GerenciadorTarefas\TestePoo\obj\Debug\net7.0\refint\TestePo
 C:\Users\SWA\Desktop\GerenciadorTarefas\TestePoo\obj\Debug\net7.0\TestePoo.pdb
 C:\Users\SWA\Desktop\GerenciadorTarefas\TestePoo\obj\Debug\net7.0\TestePoo.genruntimeconfig.cache
 C:\Users\SWA\Desktop\GerenciadorTarefas\TestePoo\obj\Debug\net7.0\ref\TestePoo.dll
-C:\Users\Gouveia\RiderProjects\GerenciadorTarefas\TestePoo\bin\Debug\net7.0\Spectre.Console.dll

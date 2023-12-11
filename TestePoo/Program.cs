@@ -14,6 +14,9 @@ namespace TestePoo
         {
             try
             {
+                Console.BackgroundColor = Color.Black;
+                Console.Clear();
+                
                 using (var context = new DataContext())
                 {
                     context.Database.EnsureCreated();
@@ -24,20 +27,17 @@ namespace TestePoo
     
                     while (true)
                     {
-                        Console.BackgroundColor = Color.Black;
-                        Console.Clear();
-    
                         var opcao = AnsiConsole.Prompt(
                             new SelectionPrompt<(int Index, string Name)>()
-                                .AddChoices(new List<(int Index, string Name)>
-                                {
-                                    (0, "Sair"),
-                                    (1, "Já possuo cadastro"),
-                                    (2, "Quero me cadastrar"),
-                                })
-                                .UseConverter(a => a.Name)
-                                .HighlightStyle(new Style().Background(Color.DarkBlue))  // Altere a cor de fundo aqui
-                                .Title("=== Menu Principal ===")
+                               .AddChoices(new List<(int Index, string Name)>
+                               {
+                                   (0, "Sair"),
+                                   (1, "Já possuo cadastro"),
+                                   (2, "Quero me cadastrar"),
+                               })
+                               .UseConverter(a => a.Name)
+                               .HighlightStyle(new Style().Background(Color.DarkBlue))
+                               .Title("=== Menu Principal ===")
                         );
                         switch(opcao.Index)
                         {
@@ -107,8 +107,8 @@ namespace TestePoo
                     MenuTarefas(tarefaService, listaService, context);
                     break;
                 case 3:
-                    Console.WriteLine($"ID: {usuarioAtual.UsuarioId}, Nome: {usuarioAtual.Nome}, Email: {usuarioAtual.Email}");
                     Console.Clear();
+                    Console.WriteLine($"ID: {usuarioAtual.UsuarioId}, Nome: {usuarioAtual.Nome}, Email: {usuarioAtual.Email}");
                     break;
             }
         }
@@ -137,23 +137,30 @@ namespace TestePoo
             switch(opcao.Index)
             {
                 case 0:
+                    Console.Clear();
                     return;
                 case 1:
+                    Console.Clear();
                     tarefaService.Add(context, usuarioAtual);
                     break;
                 case 2:
+                    Console.Clear();
                     tarefaService.UpdateTarefa(context,tarefaService, listaService, usuarioAtual);
                     break;
                 case 3:
+                    Console.Clear();
                     tarefaService.Delete(tarefaService, listaService, usuarioAtual);
                     break;
                 case 4:
+                    Console.Clear();
                     tarefaService.GetAllTarefas(tarefaService, listaService, usuarioAtual);
                     break;
                 case 5:
+                    Console.Clear();
                     tarefaService.GetTarefasPorLista(tarefaService, listaService, usuarioAtual);
                     break;
                 case 6:
+                    Console.Clear();
                     tarefaService.AlterarStatusEmLote(tarefaService, listaService, usuarioAtual, context);
                     break;
             }
@@ -181,17 +188,22 @@ namespace TestePoo
                 switch(opcao.Index)
                 {
                     case 0:
+                        Console.Clear();
                         return;
                     case 1:
+                        Console.Clear();
                         listaService.Add(context, usuarioAtual);
                         break;
                     case 2:
+                        Console.Clear();
                         listaService.UpdateLista(context, listaService, usuarioAtual);
                         break;
                     case 3:
+                        Console.Clear();
                         listaService.Delete(listaService, usuarioAtual);
                         break;
                     case 4:
+                        Console.Clear();
                         listaService.GetAllListas(listaService, usuarioAtual);
                         break;
                 }
